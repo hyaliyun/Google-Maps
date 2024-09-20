@@ -1,0 +1,63 @@
+# Support
+
+In this tutorial, we'll walk through how to build a React component that uses the Google Maps API.
+
+Integrating React with external libraries like Google or Facebook APIs can be confusing and challenging. In this discussion, we'll look at how to integrate the Google Maps API with React. In this post we'll deal with lazily-loading the library through building complex nested components.
+
+This post is not only about how to use Google Maps, but how to use 3rd party libraries in React generally and how to build up rich interactive components.
+
+Try the live demo here
+The completed code can be found on Github here
+
+
+Table of Contents
+
+Loading a Google-based Component
+Adding props to the Map Component
+Adding state to the Map Component
+Using the Browser's Current Location
+Dragging the Map Around with addListener
+Adding Markers to the Map
+Creating the MarkerComponent
+Adding a Marker Info Window
+Conclusion
+In this post, we'll look at how we to connect the Google API and build a Google Maps Component.
+
+Demo
+
+This page can't load Google Maps correctly.
+Do you own this website?	OK
+Before we can integrate with Google Maps, we'll need to sign up at Google to get an API key.
+
+Show For more information about signing up for a Google Key of your own, check the instructions here.
+You're more than welcome to use our apiKey, but please use it lightly so Google doesn't cut off our api access so it works for everyone.
+
+Our apiKey is: AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo
+
+Loading a Google-based Component
+In order to use Google within our components, we'll need to handle two technical boundaries:
+
+Loading the Google API
+Handling access to the Google API within our components.
+Our goal here is to create an independent component that can handle these two tasks for us. Let's build a GoogleApiComponent to handle taking care of this for us (alternatively, we've wrapped this into an npm module ( google-maps-react). Feel free to grab this npm module and head to the next section).
+
+With our key in hand, we'll need to load up the Google API on our page. We can handle this in multiple ways, including directly including the  tag on our page through asynchronously loading the script using JavaScript. We try to keep our dependencies limited to the scripts we directly need on a page as well as define our dependencies in JavaScript, so we'll take the latter method of loading our window.google object using a React component.
+
+First, grab the ScriptCache.js script from this gist.
+
+There are 3 scripts included in the gist. The scripts:
+
+ScriptCache.js - The backbone of this method which asynchronously loads JavaScript  tags on a page. It will only load a single  tag on a page per-script tag declaration. If it's already loaded on a page, it calls the callback from the onLoad event immediately.
+Sample usage:
+
+
+As we built our Google Map component, we've walked through a lot of complex interactions from parent to children components, interacting with an outside library, keeping the state of a native JS library in line with a component, and much more.
+
+The entire module is available at npm google-maps-react. Feel free to check it out, pull the source, contribute back.
+
+If you're stuck, have further questions, feel free to reach out to us by:
+
+Commenting on this post at the end of the article
+Emailing us at react@fullstackreact.com
+Tweet at us at @fullstackreact
+Filling an issue on the Github repo
