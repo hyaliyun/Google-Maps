@@ -40,23 +40,52 @@ We will create a `GoogleApiComponent` to handle loading and accessing the Google
 
 Here is a basic `ScriptCache.js` implementation for asynchronously loading Google Maps API scripts.
 
-```javascript // ScriptCache.js class ScriptCache { constructor() { this.cache = {}; } // Load script asynchronously loadScript(src, onLoad) { if (this.cache[src]) { if (onLoad) onLoad(); return; } this.cache[src] = true; const script = document.createElement('script'); script.src = src; script.async = true; script.onload = onLoad; script.onerror = () => console.error(`Script load error for script ${src}`); document.body.appendChild(script); } } const scriptCache = new ScriptCache(); export default scriptCache; ``#### Used in React components:``javascript // GoogleMapLoader.js import React, { useState, useEffect } from 'react';
+// ScriptCache.js
+
+```class ScriptCache {
+    constructor() {
+        this.cache = {};
+    }
+
+    // 异步加载脚本
+    loadScript(src, onLoad) {
+        if (this.cache[src]) {
+            if (onLoad) onLoad();
+            return;
+        }
+
+        this.cache[src] = true;
+
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.onload = onLoad;
+        script.onerror = () => console.error(`Script load error for script ${src}`);
+        document.body.appendChild(script);
+    }
+}
+
+const scriptCache = new ScriptCache()
+```
+
+// GoogleMapLoader.js
+```import React, { useState, useEffect } from 'react';
 import scriptCache from './ScriptCache';
 
 const GOOGLE_MAPS_URL = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&libraries=places`;
 
 function GoogleMapLoader({ children, ...props }) {
-const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
-useEffect(() => {
-scriptCache.loadScript(GOOGLE_MAPS_URL, () => {
-setIsLoaded(true);
-});
-}, []);
+    useEffect(() => {
+        scriptCache.loadScript(GOOGLE_MAPS_URL, () => {
+            setIsLoaded(true);
+        });
+    }, []);
 
-if (!isLoaded) return `<div>`Loading...`</div>`;
+    if (!isLoaded) return <div>Loading...</div>;
 
-return `<div>`{children}`</div>`;
+    return <div>{children}</div>;
 }
 
 export default GoogleMapLoader;
