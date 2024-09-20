@@ -1,6 +1,6 @@
 <div align="center">
   <h1 align="center">
-    Docusaurus
+    Google-Maps
     <br />
     <br />
     <a href="https://docusaurus.io">
@@ -9,60 +9,83 @@
   </h1>
 </div>
 
-IMPORTANT: You can submit your token to our showcase by posting in this discussion. However, we cannot guarantee that your token will be added, nor how quickly it will be added. Please be patient.
 
-Add your token to the solana showcase
-🧑‍🎨You built a beautiful solana token and want to show it to the world?
+# Building a Google Maps Component with React
 
-🙏 Add it to our website showcase — it only takes seconds! ⏱
+## Table of Contents
 
-✒️The only thing you have to do is ➡️ give us your approval!
+1. [Load Google-based Components](#Load-google-based-components)
+2. [Add props to the Map component](#Add-props-to-map-components)
+3. [Add state to the Map component](#Add-state-to-map-components)
+4. [Use the current location of the browser](#Use the current location of the browser)
+5. [Drag the map using `addListener`](#Drag the map using -addlistener-)
+6. [Add markers to the map](#Add markers to the map)
+7. [Create a MarkerComponent](#Create-markercomponents)
+8. [Add a marker info window](#Add a marker info window)
+9. [Conclusion](#Conclusion)
 
-⚠️ Submit your website only.
+## Load Google-based Components
 
-Submit your token
-Just post a comment in this GitHub discussion with some basic information:
+Before integrating Google Maps into your React application, you need to get an API key from Google. You can register and get a key on Google Cloud Platform.
 
-Token title: <= 60 characters
-Token description: ≤120 characters
-Token URL: Live production deployment URL of your website
-Token CA: Token address
-Tags: See the list of available tags below
-You can also just give us the website URL and we’ll figure out the rest, but providing additional information is still appreciated and ensures the correct information is displayed 😄.
+### Step 1: Get an API key
 
-We will take screenshots of the tokens ourselves.
+Go to Google Cloud Platform and follow the instructions to get an API key.
 
-This data will be used to render the site showcase card:
+### Step 2: Create GoogleApiComponent
 
-Site showcase card example
+We will create a `GoogleApiComponent` to handle loading and accessing the Google Maps API. To simplify this process, we can use a third-party library (such as `react-google-maps` or wrap a component ourselves).
 
-After submission
-We will add your token as soon as possible.
+#### Sample code:
 
-Please wait - we will reply later to avoid creating too many notifications for everyone. If the notifications bother you, you can still unsubscribe - we will ping you when you reply.
+Here is a basic `ScriptCache.js` implementation for asynchronously loading Google Maps API scripts.
 
-We will add valid submissions to our site showcase in one go when we have time.
+```javascript // ScriptCache.js class ScriptCache { constructor() { this.cache = {}; } // Load script asynchronously loadScript(src, onLoad) { if (this.cache[src]) { if (onLoad) onLoad(); return; } this.cache[src] = true; const script = document.createElement('script'); script.src = src; script.async = true; script.onload = onLoad; script.onerror = () => console.error(`Script load error for script ${src}`); document.body.appendChild(script); } } const scriptCache = new ScriptCache(); export default scriptCache; ``#### Used in React components:``javascript // GoogleMapLoader.js import React, { useState, useEffect } from 'react';
+import scriptCache from './ScriptCache';
 
-We will notify you if your submission is invalid.
+const GOOGLE_MAPS_URL = `https://maps.googleapis.com/maps/api/js?key=${YOUR_API_KEY}&libraries=places`;
 
-Site Tags
-List of available site tags:
+function GoogleMapLoader({ children, ...props }) {
+const [isLoaded, setIsLoaded] = useState(false);
 
-Meme
-Airdrop
-FanToken
-Tokenization
-RWA
-NFT
+useEffect(() => {
+scriptCache.loadScript(GOOGLE_MAPS_URL, () => {
+setIsLoaded(true);
+});
+}, []);
 
-Note
-Help us keep the showcase up to date: tell us when a token has bad data.
+if (!isLoaded) return `<div>`Loading...`</div>`;
 
-You can also request updates to the token showcase data!
+return `<div>`{children}`</div>`;
+}
 
-Technically, you can open a PR yourself and edit website/src/data/users.tsx. However, except for very minor edits, we prefer to handle PRs ourselves for various reasons (signing Facebook CLA, too many PRs, time-consuming reviews, resizing images, fixing site tags and linter issues...)
-We reserve the right to edit your submission before publishing
-We will always keep this discussion clean: submissions will be marked as resolved and then deleted
+export default GoogleMapLoader;
+
+```
+
+## Add props to the Map component
+
+In your `Map` component, you can pass props Pass parameters such as center position, zoom level, etc.
+
+```javascript // MapComponent.js import React, { useRef, useEffect } from 'react'; import GoogleMapLoader from './GoogleMapLoader'; function MapComponent({ center, zoom, children }) { const mapRef = useRef(null); useEffect(() => { if (mapRef.current && window.google) { const map = new window.google.maps.Map(mapRef.current , { center: new window.google.maps.LatLng(center.lat, center.lng), zoom: zoom, }); // You can add more map-related logic here } }, [center, zoom]); return ( <GoogleMapLoader> <div ref={mapRef} style={{ height: '400px', width: '100%' }} /> {children} </GoogleMapLoader> );
+}
+
+export default MapComponent;
+```
+
+## Next Steps
+
+The next steps include adding state to the Map component, using the browser's current location, adding map event listeners, adding markers, and creating a custom MarkerComponent.
+
+### Note
+
+Due to space limitations, this only shows how to load the Google Maps API and create a basic Map component. A full implementation will include more features and details.
+
+You can continue to develop advanced features such as search functionality, custom styles for map markers, and info windows based on your specific needs.
+
+### Conclusion
+
+Through the above steps, you have learned how to integrate the Google Maps API in a React application and created a basic map component. As your project needs grow, you can continue to extend and customize this component to meet more complex needs.
 
 <p align="center">
   <a href="https://twitter.com/docusaurus"><img src="https://img.shields.io/twitter/follow/docusaurus.svg?style=social" align="right" alt="Twitter Follow" /></a>
@@ -140,7 +163,7 @@ We have a few channels for contact:
 
 ## Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)]. <a href="https://github.com/facebook/docusaurus/graphs/contributors"><img src="https://opencollective.com/Docusaurus/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)]. `<a href="https://github.com/facebook/docusaurus/graphs/contributors"><img src="https://opencollective.com/Docusaurus/contributors.svg?width=890&button=false" />``</a>`
 
 ## Backers
 
